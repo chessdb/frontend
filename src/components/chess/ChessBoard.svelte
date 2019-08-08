@@ -1,19 +1,24 @@
 <script>
     import { onMount } from "svelte";
-    import { fen } from "../lib/chess";
+    import { fen } from "../../lib/chess";
+    import WhitePawn from "./pieces/white/Pawn.svelte";
+    import WhiteRook from "./pieces/white/Rook.svelte";
+    import WhiteKnight from "./pieces/white/Knight.svelte";
+    import WhiteBishop from "./pieces/white/Bishop.svelte";
+    import WhiteQueen from "./pieces/white/Queen.svelte";
+    import WhiteKing from "./pieces/white/King.svelte";
 
-    export let size = "400px";
+    export let size = 800;
     export let start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-    const pieces = fen.parse(start_fen);
-    console.table(pieces)
-
+    const cell_size = 800 * 0.125; // Each cell has 12.5% height and width.
+    const pieces = fen.parse(start_fen).reverse();
     const ranks = ["H", "G", "F", "E", "D", "C", "B", "A"].reverse();
     const files = [8, 7, 6, 5, 4, 3, 2, 1];
 
 </script>
 
-<div class="board" style="width: {size}; height: {size};">
+<div class="board" style="width: {size}px; height: {size}px;">
     {#each files as file}
         <div class="file" class:odd={file % 2 === 1}>
             {#each ranks as rank}
@@ -31,21 +36,40 @@
     {/each}
 </div>
 
-<div class="overlay" style="width: {size}; height: {size}; top: -{size}">
+<div class="overlay" style="width: {size}px; height: {size}px; top: -{size}px">
     {#each files as file}
         <div class="file" class:odd={file % 2 === 1}>
             {#each ranks as rank, rank_index}
                 <div class="cell">
                     <!-- Show a piece SVG if this cell is not empty -->
-                    {#if pieces[rank_index + file * 8] !== ""}
+                    {#if pieces[rank_index + (file - 1) * 8] !== ""}
                         <div class="piece">
-                            <object
-                                data="/svg/pieces/{pieces[rank_index - 1 + file * 8]}.svg"
+                            <!-- <object
+                                style="width: {cell_size}px; height: {cell_size}px"
+                                data="/svg/pieces/{pieces[rank_index + (file - 1) * 8]}.svg"
                                 type="image/svg+xml"
-                                title="Chess piece ({pieces[rank_index - 1 + file * 8]})"
-                            >
+                                title="Chess piece ({pieces[rank_index + (file - 1) * 8]})"
+                            > -->
                                 <!-- TODO: Fallback png -->
-                            </object>
+                            <!-- </object> -->
+                            {#if pieces[rank_index + (file - 1) * 8] === "P"}
+                                <WhitePawn size={cell_size}/>
+                            {/if}
+                            {#if pieces[rank_index + (file - 1) * 8] === "R"}
+                                <WhiteRook size={cell_size}/>
+                            {/if}
+                            {#if pieces[rank_index + (file - 1) * 8] === "B"}
+                                <WhiteBishop size={cell_size}/>
+                            {/if}
+                            {#if pieces[rank_index + (file - 1) * 8] === "N"}
+                                <WhiteKnight size={cell_size}/>
+                            {/if}
+                            {#if pieces[rank_index + (file - 1) * 8] === "Q"}
+                                <WhiteQueen size={cell_size}/>
+                            {/if}
+                            {#if pieces[rank_index + (file - 1) * 8] === "K"}
+                                <WhiteKing size={cell_size}/>
+                            {/if}
                         </div>
                     {/if}
                 </div>
@@ -55,7 +79,7 @@
 </div>
 
 <style lang="scss">
-    @import "../scss/vars";
+    @import "../../scss/vars";
 
     .board {
         display: grid;
