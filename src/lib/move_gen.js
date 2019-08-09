@@ -12,7 +12,7 @@ import { fen } from "lib/chess";
  * is a square that the current player has a piece on, and
  * each value is an array of valid squares that particular
  * pieces can move to.
- * 
+ *
  * @example
  *     gen_legal_moves("8/8/8/8/8/8/8/1N4N1 w - -");
  * @see {@link https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation | FEN notation specifications}
@@ -32,7 +32,7 @@ export function gen_legal_moves(fen_str) {
 /**
  * Given a FEN string, this function will return a Color
  * that represents whose turn it is to move.
- * 
+ *
  * @param {string} fen_str - Fen string representing the board state.
  * @returns {Color} - A Color representing whose turn it is to move.
  */
@@ -40,7 +40,7 @@ function get_turn(fen_str) {
     const fen_by_space = fen_str.split(" ");
     // The string representing turn is always at index 2
     const turn_str = fen_by_space[2];
-    
+
     if (turn_str === "w") {
         return Color.White;
     }
@@ -55,7 +55,7 @@ function get_turn(fen_str) {
 /**
  * @param {string[]} pieces - 64 length array of piece char representations.
  * @param {Color} turn - Represents whose turn it is to make a move.
- * @returns {object} - An object containing the valid moves each pieces can play. 
+ * @returns {object} - An object containing the valid moves each pieces can play.
  */
 function gen_legal_knight_moves(pieces, turn) {
     let legal_knight_moves = { };
