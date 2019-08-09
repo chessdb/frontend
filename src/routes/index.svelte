@@ -1,5 +1,5 @@
 <script>
-    import ChessBoard from "../components/chess/ChessBoard.svelte";
+    import ChessBoard from "components/chess/ChessBoard";
 </script>
 
 <ChessBoard/>

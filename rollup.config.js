@@ -7,6 +7,7 @@ import { terser } from "rollup-plugin-terser";
 import config from "sapper/config/rollup.js";
 import pkg from "./package.json";
 import preprocess from "svelte-preprocess";
+import includepaths from "rollup-plugin-includepaths";
 
 const mode = process.env.NODE_ENV;
 const dev = mode === "development";
@@ -14,6 +15,13 @@ const legacy = !!process.env.SAPPER_LEGACY_BUILD;
 
 const onwarn = (warning, onwarn) => (warning.code === "CIRCULAR_DEPENDENCY" && /[/\\]@sapper[/\\]/.test(warning.message)) || onwarn(warning);
 const dedupe = importee => importee === "svelte" || importee.startsWith("svelte/");
+
+let includepaths_options = {
+	include: {},
+	paths: ["./src"],
+	external: [],
+	extensions: [".svelte", ".js"]
+};
 
 export default {
 	client: {
@@ -42,6 +50,7 @@ export default {
 				dedupe
 			}),
 			commonjs(),
+			includepaths(includepaths_options),
 
 			legacy && swc({
 				jsc: {
@@ -81,7 +90,8 @@ export default {
 			resolve({
 				dedupe
 			}),
-			commonjs()
+			commonjs(),
+			includepaths(includepaths_options)
 		],
 		external: Object.keys(pkg.dependencies).concat(
 			require("module").builtinModules || Object.keys(process.binding("natives"))

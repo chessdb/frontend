@@ -1,18 +1,18 @@
 <script>
     import { onMount } from "svelte";
-    import { fen } from "../../lib/chess";
-    import WhitePawn from "./pieces/white/Pawn.svelte";
-    import WhiteRook from "./pieces/white/Rook.svelte";
-    import WhiteKnight from "./pieces/white/Knight.svelte";
-    import WhiteBishop from "./pieces/white/Bishop.svelte";
-    import WhiteQueen from "./pieces/white/Queen.svelte";
-    import WhiteKing from "./pieces/white/King.svelte";
-    import BlackPawn from "./pieces/black/Pawn.svelte";
-    import BlackRook from "./pieces/black/Rook.svelte";
-    import BlackKnight from "./pieces/black/Knight.svelte";
-    import BlackBishop from "./pieces/black/Bishop.svelte";
-    import BlackQueen from "./pieces/black/Queen.svelte";
-    import BlackKing from "./pieces/black/King.svelte";
+    import { fen } from "lib/chess";
+    import WhitePawn from "components/chess/pieces/white/Pawn.svelte";
+    import WhiteRook from "components/chess/pieces/white/Rook.svelte";
+    import WhiteKnight from "components/chess/pieces/white/Knight.svelte";
+    import WhiteBishop from "components/chess/pieces/white/Bishop.svelte";
+    import WhiteQueen from "components/chess/pieces/white/Queen.svelte";
+    import WhiteKing from "components/chess/pieces/white/King.svelte";
+    import BlackPawn from "components/chess/pieces/black/Pawn.svelte";
+    import BlackRook from "components/chess/pieces/black/Rook.svelte";
+    import BlackKnight from "components/chess/pieces/black/Knight.svelte";
+    import BlackBishop from "components/chess/pieces/black/Bishop.svelte";
+    import BlackQueen from "components/chess/pieces/black/Queen.svelte";
+    import BlackKing from "components/chess/pieces/black/King.svelte";
 
     export let size = 800;
     export let start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
