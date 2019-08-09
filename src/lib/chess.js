@@ -35,7 +35,7 @@ function parse_fen(fen) {
     // Regular expression for validating the side to move of a FEN string.
     const fen_side_rxp = /^(w|b)$/;
     // Regular expression for validating the en-passant square of a FEN string.
-    const en_passant_sqaure_rxp = /^(-|[abcdefgh][36])$/;
+    const en_passant_square_rxp = /^(-|[abcdefgh][36])$/;
 
     // Tokens are wrapped in white space (single space).
     const tokens = fen.split(/\s+/);
@@ -70,7 +70,7 @@ function parse_fen(fen) {
         throw new Error("Invalid FEN; invalid side to move (must be \"w\" or \"b\"");
     }
 
-    // Board  validation.
+    // Board validation.
     const ranks = tokens[0].split("/");
 
     // There must be exactly 8 ranks.
