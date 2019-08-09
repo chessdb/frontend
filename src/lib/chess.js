@@ -56,7 +56,7 @@ function parse_fen(fen) {
 
     // En-passant token must be a valid square or "-" if no en-passant
     // capture is avaliable.
-    if (!en_passant_sqaure_rxp.test(tokens[3])) {
+    if (!en_passant_square_rxp.test(tokens[3])) {
         throw new Error("Invalid FEN; invalid en-passant setting");
     }
 
