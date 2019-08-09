@@ -6,6 +6,10 @@
 
 import { fen } from "lib/chess";
 
+const sides = {
+    white: 0,
+    black: 1,
+};
 
 /**
  * Parses a FEN string and returns an object where each key
@@ -42,11 +46,11 @@ function get_turn(fen_str) {
     const turn_str = fen_by_space[2];
 
     if (turn_str === "w") {
-        return Color.White;
+        return sides.white;
     }
 
     if (turn_str === "b") {
-        return Color.Black;
+        return sides.black;
     }
 
     throw new Error(`The string representing the turn must be either \"w\" or \"b\" but was ${turn_str}`);
@@ -60,8 +64,4 @@ function get_turn(fen_str) {
 function gen_legal_knight_moves(pieces, turn) {
     let legal_knight_moves = { };
     return legal_knight_moves;
-}
-
-const Color = {
-    Black, White, None
 }
