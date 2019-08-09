@@ -49,7 +49,7 @@ function get_turn(fen_str) {
         return Color.Black;
     }
 
-    throw new Error("The string representing the turn must be either 'w' or 'b' but was " + turn_str);
+    throw new Error(`The string representing the turn must be either \"w\" or \"b\" but was ${turn_str}`);
 }
 
 /**
