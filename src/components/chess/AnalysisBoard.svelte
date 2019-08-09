@@ -6,7 +6,7 @@
     const size = 400;
 </script>
 
-<div class="analysis" style="grid-template-columns: {size}px 20px 70px 300px; grid-template-rows: {size}px;">
+<div class="analysis" style="grid-template-columns: {size}px 20px 75px 300px; grid-template-rows: {size}px;">
     <Board/>
     <div class="estimated-winner">
         <div class="black" style="height: 24%;"></div>

@@ -21,7 +21,7 @@
             },
         },
         {
-            notation: "Kb1",
+            notation: "Rxa1",
             count: 960943,
             frequency: 43,
             results: {
@@ -62,11 +62,22 @@
         },
     ];
 
+    /**
+     * Formats a move notation replacing all piece identifiers with their
+     * respective unicode character formatted according to the HTML hex syntax.
+     *
+     * @see {@link https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode | Chess unicode characters}
+     * @example
+     *     // Returns "&#x2658;b4"
+     *     format_move_notation("Nb4");
+     * @param {string} notation - Notation to format.
+     * @returns {string} - HTML representation.
+     */
     function format_move_notation(notation) {
         return notation
             .replace(/K/g, WHITE_KING_UNICODE_HTML)
-            .replace(/Q/g, WHITE_KING_UNICODE_HTML)
-            .replace(/R/g, WHITE_KING_UNICODE_HTML)
+            .replace(/Q/g, WHITE_QUEEN_UNICODE_HTML)
+            .replace(/R/g, WHITE_ROOK_UNICODE_HTML)
             .replace(/B/g, WHITE_BISHOP_UNICODE_HTML)
             .replace(/N/g, WHITE_KNIGHT_UNICODE_HTML);
     }
@@ -76,7 +87,7 @@
     {#each moves as move}
         <div class="move">
             <div class="notation">
-                {@html format_move_notation(move.notation)}
+                {@html format_move_notation(move.notation.replace("x", "&times;"))}
             </div>
             <div class="results">
                 <div class="black" style="height: {move.results.black}%"></div>
@@ -85,21 +96,6 @@
             </div>
         </div>
     {/each}
-        <!-- {#each moves as move}
-            <div class="move">
-                <span class="notation">
-                    {@html format_move_notation(move.notation)}
-                </span>
-                <span class="frequency">
-                    {move.frequency}%
-                </span>
-                <div class="result">
-                    <div class="white" style="width: {move.results.white}%;"></div>
-                    <div class="black" style="width: {move.results.black}%;"></div>
-                    <div class="draw" style="width: {move.results.draw}%;"></div>
-                </div>
-            </div>
-        {/each} -->
 </div>
 
 <style lang="scss">
@@ -111,29 +107,35 @@
         overflow-x: hidden;
         overflow-y: auto;
         border-right: 1px solid $viewport-border;
+        color: white;
 
         .move {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            width: 70px;
+            width: 75px;
             height: 35px;
             font-size: 24px;
             background-color: $viewport-light;
+            cursor: pointer;
+
+            &:hover, &.selected {
+                background-color: $viewport-lightest;
+            }
 
             .notation {
                 display: flex;
+                font-family: "Arial";
                 width: 65px;
             }
 
             .results {
                 display: flex;
                 flex-direction: column;
-                height: 100%;
+                height: 80%;
 
                 & > * {
-
-                width: 5px;
+                    width: 5px;
                 }
 
                 .white {

@@ -10,6 +10,5 @@
 
     :global(*){
         font-family: "Roboto", sans-serif;
-        color: white;
     }
 </style>
