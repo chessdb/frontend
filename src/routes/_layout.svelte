@@ -1,9 +1,15 @@
 <slot/>
 
 <style lang="scss">
-    @import "../scss/_typography.scss";
+    @import "../scss/typography";
+    @import "../scss/vars";
+
+    :global(body) {
+        background-color: $viewport-default;
+    }
 
     :global(*){
         font-family: "Roboto", sans-serif;
+        color: white;
     }
 </style>

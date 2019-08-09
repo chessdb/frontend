@@ -6,5 +6,21 @@
  * sizes.
  */
 
+// Chess board.
 $board_cell_white: #f0d9b5;
 $board_cell_black: #b58863;
+
+// Viewport.
+$viewport-dark: #15232d;
+$viewport-default: #162f42;
+$viewport-light: #183346;
+$viewport-lighter: #1b394e;
+$viewport-border: #0f4162;
+
+// General utility colors.
+$attention: #ffc600;
+
+// Player colors.
+$player-white: white;
+$player-black: black;
+$player-none: gray;

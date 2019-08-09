@@ -4,6 +4,23 @@
  * @since 1.0.0
  */
 
+// Chess unicode characters.
+// White.
+export const WHITE_KING_UNICODE_HTML = "&#x2654;";
+export const WHITE_QUEEN_UNICODE_HTML = "&#x2655;";
+export const WHITE_ROOK_UNICODE_HTML = "&#x2656;";
+export const WHITE_BISHOP_UNICODE_HTML = "&#x2657;";
+export const WHITE_KNIGHT_UNICODE_HTML = "&#x2658;";
+export const WHITE_PAWN_UNICODE_HTML = "&#x2659;";
+// Black.
+export const BLACK_KING_UNICODE_HTML = "&#x265A;";
+export const BLACK_QUEEN_UNICODE_HTML = "&#x265B;";
+export const BLACK_ROOK_UNICODE_HTML = "&#x265C;";
+export const BLACK_BISHOP_UNICODE_HTML = "&#x265D;";
+export const BLACK_KNIGHT_UNICODE_HTML = "&#x265E;";
+export const BLACK_PAWN_UNICODE_HTML = "&#x265F;";
+
+
 /**
  * Parses a FEN string and returns an array of pieces as represented by chars.
  * Function does not validate impossible piece positions such as pawns before

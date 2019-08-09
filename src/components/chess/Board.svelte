@@ -110,6 +110,7 @@
     .board {
         display: grid;
         grid-template-rows: repeat(8, 12.5%);
+        border: 1px solid $viewport-border;
 
         .file {
             width: 100%;
