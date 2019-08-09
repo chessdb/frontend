@@ -6,3 +6,18 @@
  */
 
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+@font-face {
+    font-family: "Noto Chess";
+    src: url(fonts/noto-chess.toff2) format("woff2"),
+         url(fonts/lichess.chess.woff) format("woff")
+}
+
+@font-face {
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 300;
+    src: local("Roboto Light"),
+         local("Roboto-Light"),
+    url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmSU5fABc4EsA.woff2) format("woff2");
+}

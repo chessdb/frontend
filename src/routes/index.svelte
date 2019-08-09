@@ -1,8 +1,8 @@
 <script>
-    import ChessBoard from "components/chess/ChessBoard";
+    import AnalysisBoard from "components/chess/AnalysisBoard";
 </script>
 
-<ChessBoard/>
+<AnalysisBoard/>
 
 <style lang="scss">
 </style>
