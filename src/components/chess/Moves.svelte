@@ -50,6 +50,16 @@
                 draw: 43,
             },
         },
+        {
+            notation: "Nxb5",
+            frequency: 11,
+            count: 104912,
+            results: {
+                white: 30,
+                black: 26,
+                draw: 44,
+            },
+        },
     ];
 
     function format_move_notation(notation) {
@@ -63,7 +73,19 @@
 </script>
 
 <div class="moves">
-        {#each moves as move}
+    {#each moves as move}
+        <div class="move">
+            <div class="notation">
+                {@html format_move_notation(move.notation)}
+            </div>
+            <div class="results">
+                <div class="black" style="height: {move.results.black}%"></div>
+                <div class="draw" style="height: {move.results.draw}%"></div>
+                <div class="white" style="height: {move.results.white}%"></div>
+            </div>
+        </div>
+    {/each}
+        <!-- {#each moves as move}
             <div class="move">
                 <span class="notation">
                     {@html format_move_notation(move.notation)}
@@ -77,43 +99,49 @@
                     <div class="draw" style="width: {move.results.draw}%;"></div>
                 </div>
             </div>
-        {/each}
+        {/each} -->
 </div>
 
 <style lang="scss">
     @import "../../scss/vars.scss";
 
     .moves {
-        font-size: 14px;
+        display: flex;
+        flex-direction: column;
         overflow-x: hidden;
         overflow-y: auto;
-        border: 1px solid $viewport-border;
-        border-left: none;
+        border-right: 1px solid $viewport-border;
 
         .move {
-            display: grid;
-            grid-template-columns: 1fr 1fr 5fr;
-            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 70px;
+            height: 35px;
+            font-size: 24px;
             background-color: $viewport-light;
 
-            &:nth-child(odd) {
-                background-color: $viewport-lighter;
-            }
-
             .notation {
-                font-family: "Arial";
-                font-weight: bold;
+                display: flex;
+                width: 65px;
             }
 
-            .result {
+            .results {
                 display: flex;
+                flex-direction: column;
+                height: 100%;
+
+                & > * {
+
+                width: 5px;
+                }
 
                 .white {
                     background-color: $player-white;
                 }
 
                 .black {
-                    background-color: $player-white;
+                    background-color: $player-black;
                 }
 
                 .draw {
