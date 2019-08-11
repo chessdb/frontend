@@ -20,14 +20,17 @@ const direction = {
 }
 
 const knight_dir = [
-    direction.NNW,
-    direction.NNE,
-    direction.NEE,
-    direction.SEE,
-    direction.SSE,
-    direction.SSW,
-    direction.SWW,
-    direction.NWW,
+    direction.NNW, direction.NNE,
+    direction.NEE, direction.SEE,
+    direction.SSE, direction.SSW,
+    direction.SWW, direction.NWW,
+ ];
+
+ const king_dir = [
+     direction.N, direction.NE,
+     direction.E, direction.SE,
+     direction.S, direction.SW,
+     direction.W, direction.NW,
  ];
 
 /**
@@ -47,6 +50,7 @@ export function gen_legal_moves(fen_str) {
     const pieces_with_padding = add_padding(pieces);
     const turn = get_turn(fen_str)
     const pseudo_legal_moves = gen_pseudo_legal_moves(pieces_with_padding, turn);
+    console.log(pseudo_legal_moves);
     return remove_illegal_moves(pseudo_legal_moves);
 }
 
@@ -81,16 +85,27 @@ function gen_pseudo_legal_moves(pieces, turn) {
             continue;
         }
 
+        let new_moves = { };
         switch (pieces[i]) {
             case 'N':
-                var moves = gen_non_slider_moves(pieces, turn, i, knight_dir);
-                console.log(`Found ${JSON.stringify(moves)} moves for white knight at square ${i}`);
+                new_moves = gen_non_slider_moves(pieces, turn, i, knight_dir);
+                break;
+            case 'K':
+                new_moves = gen_non_slider_moves(pieces, turn, i, king_dir);
                 break;
             case 'n':
-                var moves = gen_non_slider_moves(pieces, turn, i, knight_dir);
-                console.log(`Found ${JSON.stringify(moves)} moves for black knight at square ${i}`);
+                new_moves = gen_non_slider_moves(pieces, turn, i, knight_dir);
+                break;
+            case 'k':
+                new_moves = gen_non_slider_moves(pieces, turn, i, king_dir);
                 break;
         }
+
+        if (Object.keys(new_moves).length === 0) {
+            continue;
+        }
+
+        pseudo_legal_moves = extend_object(pseudo_legal_moves, new_moves);
     }
 
     return pseudo_legal_moves;
@@ -104,7 +119,7 @@ function remove_illegal_moves(moves) {
 // TODO: Add documentation
 function gen_non_slider_moves(pieces, turn, square, directions) {
     // TODO: "square" but either "0" or "a1"
-    let moves = { square: [] };
+    let moves = { [square]: [] };
     for (let i = 0; i < directions.length; i++) {
         const new_square = square + directions[i];
         if (!is_valid_square(new_square)) {
@@ -119,8 +134,7 @@ function gen_non_slider_moves(pieces, turn, square, directions) {
             continue;
         }
         
-        moves.square.push(new_square);
-
+        moves[square].push(new_square);
     }
     
     return moves;
@@ -165,4 +179,16 @@ function is_piece_color(piece, color) {
 
     // TODO: Maybe throw error
     return false;
+}
+
+function extend_object(obj1, obj2) {
+    for (var key in obj2) {
+        if (key in obj1) {
+            continue;
+        }
+
+        obj1[key] = obj2[key];
+    }
+
+    return obj1;
 }
