@@ -1,27 +1,44 @@
-<script context="module">
-    export async function preload(a, b) {
-        console.log(a, b)
-    }
+<script>
+    import { current_page } from "stores";
 </script>
-
 
 <div class="content">
     <nav class="header">
         <span class="title">
             ChessDB
         </span>
-        <div class="navitem">
+        <a
+            href="/"
+            rel=prefetch
+            class="navitem"
+            class:active={$current_page === "/"}
+        >
             Position analysis
-        </div>
-        <div class="navitem">
+        </a>
+        <a
+            href="/openings"
+            rel=prefetch
+            class="navitem"
+            class:active={$current_page === "/openings"}
+        >
             Opening explorer
-        </div>
-        <div class="navitem">
+        </a>
+        <a
+            href="/top"
+            rel=prefetch
+            class="navitem"
+            class:active={$current_page === "/top"}
+        >
             Top players
-        </div>
-        <div class="navitem">
+        </a>
+        <a
+            href="/api"
+            rel=prefetch
+            class="navitem"
+            class:active={$current_page === "/api"}
+        >
             API
-        </div>
+        </a>
     </nav>
 
     <div class="body">
@@ -52,6 +69,11 @@
         font-family: "Roboto", sans-serif;
     }
 
+    :global(a) {
+        color: inherit;
+        text-decoration: inherit;
+    }
+
     .content {
         display: flex;
         flex-direction: column;
@@ -71,12 +93,16 @@
             }
 
             .navitem {
-                font-size: 22px;
+                font-size: 18px;
                 cursor: pointer;
                 padding: 0 15px;
+                text-transform: uppercase;
+                margin-left: 2px;
 
                 &:hover, &.active {
                     color: white;
+                    border-left: 2px solid $attention;
+                    margin-left: 0px;
                 }
             }
         }
