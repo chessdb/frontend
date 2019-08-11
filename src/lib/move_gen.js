@@ -11,6 +11,16 @@ const sides = {
     black: 1,
 };
 
+const direction = {
+              NNW: +15,		  NNE: +17,
+	NWW:  +7,  NW:  +7, N: +8, NE: +9,  NEE: +10,
+			    W:  -1,		    E: +1,
+	SWW: -10,  SW:  -9, S: -8, SE: -7,  SEE:  -6,
+			  SSW: -17,		  SSE: -15,
+}
+
+const knight_dir = [ direction.NNW, direction.NNE, direction.NEE ];
+
 /**
  * Parses a FEN string and returns an object where each key
  * is a square that the current player has a piece on, and
@@ -25,12 +35,64 @@ const sides = {
  */
 export function gen_legal_moves(fen_str) {
     const pieces = fen.parse(fen_str).reverse();
-    const turn = get_turn(fen_str);
+    const turn = get_turn(fen_str)
+    const pseudo_legal_moves = gen_pseudo_legal_moves(pieces, turn);
+    return remove_illegal_moves(pseudo_legal_moves);
+}
 
-    const legal_knight_moves = gen_legal_knight_moves(pieces, turn);
+// TODO: Add documentation
+function gen_pseudo_legal_moves(pieces, turn) {
+    let pseudo_legal_moves = { };
+    for (let i = 0; i < pieces.length; i++) {
+        if (!is_piece_color(pieces[i], turn)) {
+            continue;
+        }
 
-    let legal_moves = { };
-    return legal_moves;
+        switch (pieces[i]) {
+            case 'N':
+                var moves = gen_non_slider_moves(pieces, turn, i, knight_dir);
+                console.log(`Found ${JSON.stringify(moves)} moves for knight at square ${i}`);
+                break;
+            case 'n':
+                var moves = gen_non_slider_moves(pieces, turn, i, knight_dir);
+                console.log(`Found ${JSON.stringify(moves)} moves for knight at square ${i}`);
+                break;
+        }
+    }
+
+    return pseudo_legal_moves;
+}
+
+// TODO: Add documentation
+function remove_illegal_moves(moves) {
+    return moves;
+}
+
+// TODO: Add documentation
+function gen_non_slider_moves(pieces, turn, square, directions) {
+    // TODO: Should be "square" but either "0" or "a1"
+    let moves = { square: [] };
+    console.log(directions);
+    for (let i = 0; i < directions.length; i++) {
+        const new_square = square + directions[i];
+        if (!is_valid_square(new_square)) {
+            continue;
+        }
+
+        if (is_piece_color(pieces[new_square], turn)) {
+            continue;
+        }
+        
+        moves.square.push(new_square);
+
+    }
+    
+    return moves;
+}
+
+// TODO: Add documentation
+function is_valid_square(square) {
+    return true;
 }
 
 /**
@@ -42,8 +104,8 @@ export function gen_legal_moves(fen_str) {
  */
 function get_turn(fen_str) {
     const fen_by_space = fen_str.split(" ");
-    // The string representing turn is always at index 2
-    const turn_str = fen_by_space[2];
+    // The string representing turn is always at index 1
+    const turn_str = fen_by_space[1];
 
     if (turn_str === "w") {
         return sides.white;
@@ -56,12 +118,15 @@ function get_turn(fen_str) {
     throw new Error(`The string representing the turn must be either \"w\" or \"b\" but was ${turn_str}`);
 }
 
-/**
- * @param {string[]} pieces - 64 length array of piece char representations.
- * @param {Color} turn - Represents whose turn it is to make a move.
- * @returns {object} - An object containing the valid moves each pieces can play.
- */
-function gen_legal_knight_moves(pieces, turn) {
-    let legal_knight_moves = { };
-    return legal_knight_moves;
+function is_piece_color(piece, color) {
+    if (color === sides.white) {
+        return ['P', 'R', 'N', 'B', 'Q', 'K'].includes(piece);
+    }
+    
+    if (color === sides.black) {
+        return ['p', 'r', 'n', 'b', 'q', 'k'].includes(piece);
+    }
+
+    // TODO: Maybe throw error
+    return false;
 }
