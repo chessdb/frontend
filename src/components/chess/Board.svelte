@@ -24,26 +24,29 @@
     const files = [8, 7, 6, 5, 4, 3, 2, 1];
 
     function cell_click(index) {
-        console.log(`Clicked ${index}`)
         if ($selected_piece.index === index) {
             // Unselect the piece.
             selected_piece.set({
                 char: "",
                 index: -1,
             });
-            returnl
         } else if ($selected_piece.char !== "" && $selected_piece.index !== -1) {
             // Move the selected piece to the selected cell.
             pieces[index] = $selected_piece.char;
             // Clear the previous position of the piece.
             pieces[$selected_piece.index] = "";
+            // Unselect the piece.
+            selected_piece.set({
+                char: "",
+                index: -1,
+            });
+        } else {
+            // Mark the clicked piece as selected.
+            selected_piece.set({
+                char: pieces[index],
+                index,
+            });
         }
-
-        // Mark the clicked piece as selected.
-        selected_piece.set({
-            char: pieces[index],
-            index,
-        });
     }
 
     $: piece_is_selected = $selected_piece.index !== -1;
