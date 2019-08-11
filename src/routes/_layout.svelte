@@ -4,14 +4,19 @@
 
 <div class="content">
     <nav class="header">
-        <span class="title">
-            ChessDB
-        </span>
         <a
             href="/"
             rel=prefetch
-            class="navitem"
+            class="navitem title"
             class:active={$current_page === "/"}
+        >
+            ChessDB
+        </a>
+        <a
+            href="/positions"
+            rel=prefetch
+            class="navitem"
+            class:active={$current_page.startsWith("/positions")}
         >
             Position analysis
         </a>
@@ -19,7 +24,7 @@
             href="/openings"
             rel=prefetch
             class="navitem"
-            class:active={$current_page === "/openings"}
+            class:active={$current_page.startsWith("/openings")}
         >
             Opening explorer
         </a>
@@ -27,7 +32,7 @@
             href="/top"
             rel=prefetch
             class="navitem"
-            class:active={$current_page === "/top"}
+            class:active={$current_page.startsWith("/top")}
         >
             Top players
         </a>
@@ -35,7 +40,7 @@
             href="/api"
             rel=prefetch
             class="navitem"
-            class:active={$current_page === "/api"}
+            class:active={$current_page.startsWith("/api")}
         >
             API
         </a>
@@ -44,7 +49,7 @@
             href="/settings"
             rel=prefetch
             class="navitem"
-            class:active={$current_page === "/settings"}
+            class:active={$current_page.startsWith("/settings")}
         >
             Settings
         </a>
@@ -86,10 +91,6 @@
             flex-direction: column;
             color: $text-default;
             border-right: 1px solid $viewport-border;
-            .title {
-                font-size: 36px;
-                padding: 20px;
-            }
 
             .filler {
                 flex: 1;
@@ -109,6 +110,11 @@
                     background-color: $viewport-lighter;
                 }
 
+                &.title {
+                    font-size: 36px;
+                    padding: 20px;
+                }
+
                 &.end {
                     justify-self: flex-end;
                 }
@@ -117,6 +123,7 @@
 
         .body {
             flex: 1;
+            background-color: $viewport-dark;
         }
     }
 
