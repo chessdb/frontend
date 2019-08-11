@@ -39,17 +39,20 @@
         >
             API
         </a>
+        <div class="filler"></div>
+        <a
+            href="/settings"
+            rel=prefetch
+            class="navitem"
+            class:active={$current_page === "/settings"}
+        >
+            Settings
+        </a>
     </nav>
 
     <div class="body">
         <slot/>
     </div>
-
-    <nav class="footer">
-        <div class="settings">
-            S
-        </div>
-    </nav>
 </div>
 
 <style lang="scss">
@@ -76,26 +79,26 @@
 
     .content {
         display: flex;
-        flex-direction: column;
         height: 100%;
 
         .header {
             display: flex;
-            align-items: center;
-            height: 40px;
-            padding: 0 20px;
+            flex-direction: column;
             color: $text-default;
-            border-bottom: 1px solid $viewport-border;
-
+            border-right: 1px solid $viewport-border;
             .title {
                 font-size: 36px;
-                margin-right: 20px;
+                padding: 20px;
+            }
+
+            .filler {
+                flex: 1;
             }
 
             .navitem {
                 font-size: 18px;
                 cursor: pointer;
-                padding: 0 15px;
+                padding: 10px 15px;
                 text-transform: uppercase;
                 margin-left: 2px;
 
@@ -103,22 +106,17 @@
                     color: white;
                     border-left: 2px solid $attention;
                     margin-left: 0px;
+                    background-color: $viewport-lighter;
+                }
+
+                &.end {
+                    justify-self: flex-end;
                 }
             }
         }
 
         .body {
             flex: 1;
-        }
-
-        .footer {
-            border-top: 1px solid $viewport-border;
-            color: $text-default;
-            height: 20px;
-
-            .settings {
-                float: right;
-            }
         }
     }
 
