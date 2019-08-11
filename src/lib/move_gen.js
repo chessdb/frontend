@@ -12,14 +12,23 @@ const sides = {
 };
 
 const direction = {
-              NNW: +15,		  NNE: +17,
-	NWW:  +7,  NW:  +7, N: +8, NE: +9,  NEE: +10,
-			    W:  -1,		    E: +1,
-	SWW: -10,  SW:  -9, S: -8, SE: -7,  SEE:  -6,
-			  SSW: -17,		  SSE: -15,
+             NNW: +19,		   NNE: +21,
+    NWW: + 8, NW: + 9, N: +10,  NE: +11, NEE: +12,
+               W: - 1,		     E: + 1,
+    SWW: -12, SW: -11, S: -10,  SE: - 9, SEE: -8,
+             SSW: -21,		   SSE: -19,
 }
 
-const knight_dir = [ direction.NNW, direction.NNE, direction.NEE ];
+const knight_dir = [
+    direction.NNW,
+    direction.NNE,
+    direction.NEE,
+    direction.SEE,
+    direction.SSE,
+    direction.SSW,
+    direction.SWW,
+    direction.NWW,
+ ];
 
 /**
  * Parses a FEN string and returns an object where each key
@@ -35,9 +44,33 @@ const knight_dir = [ direction.NNW, direction.NNE, direction.NEE ];
  */
 export function gen_legal_moves(fen_str) {
     const pieces = fen.parse(fen_str).reverse();
+    const pieces_with_padding = add_padding(pieces);
     const turn = get_turn(fen_str)
-    const pseudo_legal_moves = gen_pseudo_legal_moves(pieces, turn);
+    const pseudo_legal_moves = gen_pseudo_legal_moves(pieces_with_padding, turn);
     return remove_illegal_moves(pseudo_legal_moves);
+}
+
+function add_padding(pieces) {
+    let pieces_with_padding = [];
+    for (let i = 0; i < 2 * 10; i++) {
+        pieces_with_padding.push('invalid');
+    }
+    
+    for (let rank = 0; rank < 8; rank++) {
+        pieces_with_padding.push('invalid');
+        for (let file = 0; file < 8; file++) {
+            const piece = pieces[rank * 8 + file];
+            pieces_with_padding.push(piece);
+        }
+
+        pieces_with_padding.push('invalid');
+    }
+
+    for (let i = 0; i < 2 * 10; i++) {
+        pieces_with_padding.push('invalid');
+    }
+
+    return pieces_with_padding;
 }
 
 // TODO: Add documentation
@@ -51,11 +84,11 @@ function gen_pseudo_legal_moves(pieces, turn) {
         switch (pieces[i]) {
             case 'N':
                 var moves = gen_non_slider_moves(pieces, turn, i, knight_dir);
-                console.log(`Found ${JSON.stringify(moves)} moves for knight at square ${i}`);
+                console.log(`Found ${JSON.stringify(moves)} moves for white knight at square ${i}`);
                 break;
             case 'n':
                 var moves = gen_non_slider_moves(pieces, turn, i, knight_dir);
-                console.log(`Found ${JSON.stringify(moves)} moves for knight at square ${i}`);
+                console.log(`Found ${JSON.stringify(moves)} moves for black knight at square ${i}`);
                 break;
         }
     }
@@ -70,9 +103,8 @@ function remove_illegal_moves(moves) {
 
 // TODO: Add documentation
 function gen_non_slider_moves(pieces, turn, square, directions) {
-    // TODO: Should be "square" but either "0" or "a1"
+    // TODO: "square" but either "0" or "a1"
     let moves = { square: [] };
-    console.log(directions);
     for (let i = 0; i < directions.length; i++) {
         const new_square = square + directions[i];
         if (!is_valid_square(new_square)) {
@@ -80,6 +112,10 @@ function gen_non_slider_moves(pieces, turn, square, directions) {
         }
 
         if (is_piece_color(pieces[new_square], turn)) {
+            continue;
+        }
+
+        if (pieces[new_square] === 'invalid')  {
             continue;
         }
         
