@@ -19,11 +19,21 @@ const direction = {
              SSW: -21,		   SSE: -19,
 }
 
+const rook_dir = [
+    direction.N, direction.E,
+    direction.S, direction.W,
+];
+
 const knight_dir = [
     direction.NNW, direction.NNE,
     direction.NEE, direction.SEE,
     direction.SSE, direction.SSW,
     direction.SWW, direction.NWW,
+ ];
+
+ const bishop_dir = [
+     direction.NW, direction.NE,
+     direction.SE, direction.SW,
  ];
 
  const king_dir = [
@@ -87,14 +97,33 @@ function gen_pseudo_legal_moves(pieces, turn) {
 
         let new_moves = { };
         switch (pieces[i]) {
+            case 'R':
+                new_moves = gen_slider_moves(pieces, turn, i, rook_dir);
+                break;
             case 'N':
                 new_moves = gen_non_slider_moves(pieces, turn, i, knight_dir);
+                break;
+            case 'B':
+                new_moves = gen_slider_moves(pieces, turn, i, bishop_dir);
+                break;
+            case 'Q':
+                new_moves = gen_slider_moves(pieces, turn, i, king_dir);
                 break;
             case 'K':
                 new_moves = gen_non_slider_moves(pieces, turn, i, king_dir);
                 break;
+                
+            case 'r':
+                new_moves = gen_slider_moves(pieces, turn, i, rook_dir);
+                break;
             case 'n':
                 new_moves = gen_non_slider_moves(pieces, turn, i, knight_dir);
+                break;
+            case 'b':
+                new_moves = gen_slider_moves(pieces, turn, i, bishop_dir);
+                break;
+            case 'q':
+                new_moves = gen_slider_moves(pieces, turn, i, king_dir);
                 break;
             case 'k':
                 new_moves = gen_non_slider_moves(pieces, turn, i, king_dir);
@@ -141,6 +170,38 @@ function gen_non_slider_moves(pieces, turn, square, directions) {
 }
 
 // TODO: Add documentation
+function gen_slider_moves(pieces, turn, square, directions) {
+    // TODO: "square" but either "0" or "a1"
+    let moves = { [square]: [] };
+    const opponent_color = get_opponent_color(turn);
+    for (let i = 0; i < directions.length; i++) {
+        let new_square = square;
+
+        while (true) {
+            new_square += directions[i];
+            if (!is_valid_square(new_square)) {
+                break;
+            }
+
+            if (is_piece_color(pieces[new_square], turn)) {
+                break;
+            }
+
+            if (pieces[new_square] === 'invalid')  {
+                break;
+            }
+            
+            moves[square].push(new_square);
+            if (is_piece_color(pieces[new_square], opponent_color)) {
+                break;
+            }
+        }
+    }
+    
+    return moves;
+}
+
+// TODO: Add documentation
 function is_valid_square(square) {
     return true;
 }
@@ -179,6 +240,19 @@ function is_piece_color(piece, color) {
 
     // TODO: Maybe throw error
     return false;
+}
+
+function get_opponent_color(color) {
+    if (color === sides.white) {
+        return sides.black;
+    }
+
+    if (color === sides.black) {
+        return sides.white;
+    }
+
+    // TODO: Throw error
+    return null;
 }
 
 function extend_object(obj1, obj2) {
