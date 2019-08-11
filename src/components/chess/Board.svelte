@@ -13,6 +13,7 @@
     import BlackBishop from "components/chess/pieces/black/Bishop.svelte";
     import BlackQueen from "components/chess/pieces/black/Queen.svelte";
     import BlackKing from "components/chess/pieces/black/King.svelte";
+    import { selected_piece } from "stores";
 
     export let size = 400;
     export let start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -22,14 +23,48 @@
     const ranks = ["H", "G", "F", "E", "D", "C", "B", "A"].reverse();
     const files = [8, 7, 6, 5, 4, 3, 2, 1];
 
+    function cell_click(index) {
+        if ($selected_piece.index === index) {
+            // Unselect the piece.
+            selected_piece.set({
+                char: "",
+                index: -1,
+            });
+        } else if ($selected_piece.char !== "" && $selected_piece.index !== -1) {
+            // Move the selected piece to the selected cell.
+            pieces[index] = $selected_piece.char;
+            // Clear the previous position of the piece.
+            pieces[$selected_piece.index] = "";
+            // Unselect the piece.
+            selected_piece.set({
+                char: "",
+                index: -1,
+            });
+        } else {
+            // Mark the clicked piece as selected.
+            selected_piece.set({
+                char: pieces[index],
+                index,
+            });
+        }
+    }
+
+    $: piece_is_selected = $selected_piece.index !== -1;
+    $: get_piece_char = (rank, file) => pieces[rank + (file - 1) * 8];
+    $: get_piece_index = (rank, file) => rank + (file - 1) * 8;
+
 </script>
 
 <div>
     <div class="board" style="width: {size}px; height: {size}px;">
         {#each files as file}
             <div class="file" class:odd={file % 2 === 1}>
-                {#each ranks as rank}
-                    <div class="cell">
+                {#each ranks as rank, rank_index}
+                    <div
+                        class="cell"
+                        class:selected={$selected_piece.index === get_piece_index(rank_index, file)}
+                        class:attacked={get_piece_char(rank_index, file) !== "" && piece_is_selected}
+                    >
                         <!-- File/rank notation -->
                         {#if file === 1}
                             <span class="rank-lbl">{rank}</span>
@@ -43,22 +78,32 @@
         {/each}
     </div>
 
-    <div class="overlay" style="width: {size}px; height: {size}px; top: -{size}px">
+    <div class="actions-overlay" style="width: {size}px; height: {size}px; top: -{size}px">
         {#each files as file}
             <div class="file" class:odd={file % 2 === 1}>
+                {#each ranks as rank, rank_index}
+                    <div class="cell">
+                        <!-- Display a moveable indicator for a legal move avaliable on this cell. -->
+                        {#if piece_is_selected && get_piece_char(rank_index, file) === ""}
+                            <div
+                                class="move-indicator"
+                                style="width: {cell_size / 3}px; height: {cell_size / 3}px; border-radius: {cell_size / 6}px;"
+                            ></div>
+                        {/if}
+                    </div>
+                {/each}
+            </div>
+        {/each}
+    </div>
+
+    <div class="pieces-overlay" style="width: {size}px; height: {size}px; top: -{size * 2}px">
+        {#each files as file}
+            <div class="file">
                 {#each ranks as rank, rank_index}
                     <div class="cell">
                         <!-- Show a piece SVG if this cell is not empty -->
                         {#if pieces[rank_index + (file - 1) * 8] !== ""}
                             <div class="piece">
-                                <!-- <object
-                                    style="width: {cell_size}px; height: {cell_size}px"
-                                    data="/svg/pieces/{pieces[rank_index + (file - 1) * 8]}.svg"
-                                    type="image/svg+xml"
-                                    title="Chess piece ({pieces[rank_index + (file - 1) * 8]})"
-                                > -->
-                                    <!-- TODO: Fallback png -->
-                                <!-- </object> -->
                                 {#if pieces[rank_index + (file - 1) * 8] === "P"}
                                     <WhitePawn size={cell_size}/>
                                 {/if}
@@ -101,6 +146,16 @@
                 {/each}
             </div>
         {/each}
+    </div>
+
+    <div class="clickable-overlay" style="width: {size}px; height: {size}px; top: -{size * 3}px">
+            {#each files as file}
+                <div class="file">
+                    {#each ranks as rank, rank_index}
+                        <div class="cell" on:click={() => cell_click(rank_index + (file - 1) * 8)}></div>
+                    {/each}
+                </div>
+            {/each}
     </div>
 </div>
 
@@ -147,6 +202,14 @@
                 font-size: 12px;
                 font-weight: bold;
 
+                &.selected {
+                    background-color: $move_color !important;
+                }
+
+                &.attacked {
+                    border: 2px solid $attacked_color;
+                }
+
                 .rank-lbl {
                     align-self: flex-end;
                     margin-left: 3px;
@@ -163,7 +226,7 @@
         }
     }
 
-    .overlay {
+    .actions-overlay {
         position: relative;
         display: grid;
         grid-template-rows: repeat(8, 12.5%);
@@ -173,10 +236,42 @@
             display: grid;
             grid-template-columns: repeat(8, 12.5%);
 
-            .piece, .piece object {
-                width: 100%;
-                height: 100%;
+            .cell {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                .move-indicator {
+                    background-color: $move-color;
+                    opacity: 0.4;
+                }
             }
+        }
+
+    }
+
+    .pieces-overlay {
+        position: relative;
+        display: grid;
+        grid-template-rows: repeat(8, 12.5%);
+
+        .file {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(8, 12.5%);
+        }
+    }
+
+    .clickable-overlay {
+        position: relative;
+        display: grid;
+        grid-template-rows: repeat(8, 12.5%);
+        border: 1px solid $viewport-border;
+
+        .file {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(8, 12.5%);
         }
     }
 </style>
