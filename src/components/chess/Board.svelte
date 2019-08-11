@@ -13,6 +13,7 @@
     import BlackBishop from "components/chess/pieces/black/Bishop.svelte";
     import BlackQueen from "components/chess/pieces/black/Queen.svelte";
     import BlackKing from "components/chess/pieces/black/King.svelte";
+    import { selected_piece } from "stores";
 
     export let size = 400;
     export let start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -22,14 +23,34 @@
     const ranks = ["H", "G", "F", "E", "D", "C", "B", "A"].reverse();
     const files = [8, 7, 6, 5, 4, 3, 2, 1];
 
+    function select_piece(char, index) {
+        if ($selected_piece.char === char && $selected_piece.index === index) {
+            // If the clicked piece was already selected, unselect the piece.
+            selected_piece.set({
+                char: "",
+                index: -1,
+            });
+        } else {
+            // Mark the clicked piece as selected.
+            selected_piece.set({
+                char,
+                index,
+            });
+        }
+    }
+
 </script>
 
 <div>
+    {JSON.stringify($selected_piece)}
     <div class="board" style="width: {size}px; height: {size}px;">
         {#each files as file}
             <div class="file" class:odd={file % 2 === 1}>
-                {#each ranks as rank}
-                    <div class="cell">
+                {#each ranks as rank, rank_index}
+                    <div
+                        class="cell"
+                        class:selected={$selected_piece.index === rank_index + (file - 1) * 8}
+                    >
                         <!-- File/rank notation -->
                         {#if file === 1}
                             <span class="rank-lbl">{rank}</span>
@@ -50,7 +71,10 @@
                     <div class="cell">
                         <!-- Show a piece SVG if this cell is not empty -->
                         {#if pieces[rank_index + (file - 1) * 8] !== ""}
-                            <div class="piece">
+                            <div
+                                class="piece"
+                                on:click={() => select_piece(pieces[rank_index + (file - 1) * 8], rank_index + (file - 1) * 8)}
+                            >
                                 <!-- <object
                                     style="width: {cell_size}px; height: {cell_size}px"
                                     data="/svg/pieces/{pieces[rank_index + (file - 1) * 8]}.svg"
@@ -146,6 +170,10 @@
                 display: flex;
                 font-size: 12px;
                 font-weight: bold;
+
+                &.selected {
+                    background-color: blue !important;
+                }
 
                 .rank-lbl {
                     align-self: flex-end;
