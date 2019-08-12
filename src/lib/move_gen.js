@@ -97,6 +97,9 @@ function gen_pseudo_legal_moves(pieces, turn) {
 
         let new_moves = { };
         switch (pieces[i]) {
+            case 'P':
+                new_moves = gen_white_pawn_moves(pieces, i);
+                break;
             case 'R':
                 new_moves = gen_slider_moves(pieces, turn, i, rook_dir);
                 break;
@@ -112,7 +115,10 @@ function gen_pseudo_legal_moves(pieces, turn) {
             case 'K':
                 new_moves = gen_non_slider_moves(pieces, turn, i, king_dir);
                 break;
-                
+
+            case 'p':
+                new_moves = gen_black_pawn_moves(pieces, i);
+                break;
             case 'r':
                 new_moves = gen_slider_moves(pieces, turn, i, rook_dir);
                 break;
@@ -130,11 +136,10 @@ function gen_pseudo_legal_moves(pieces, turn) {
                 break;
         }
 
-        if (Object.keys(new_moves).length === 0) {
-            continue;
+        if (Object.keys(new_moves).length !== 0) {
+            pseudo_legal_moves = extend_object(pseudo_legal_moves, new_moves);
         }
 
-        pseudo_legal_moves = extend_object(pseudo_legal_moves, new_moves);
     }
 
     return pseudo_legal_moves;
@@ -202,6 +207,38 @@ function gen_slider_moves(pieces, turn, square, directions) {
 }
 
 // TODO: Add documentation
+function gen_white_pawn_moves(pieces, square) {
+    let moves = { [square]: [] };
+    let move = square + direction.N;
+    if (is_empty(pieces[move])) {
+        moves[square].push(move);
+        move += direction.N;
+
+        if (is_empty(pieces[move]) && is_rank(square, 2)) {
+            moves[square].push(move);
+        }
+    }
+
+    return moves;
+}
+
+// TODO: Add documentation
+function gen_black_pawn_moves(pieces, square) {
+    let moves = { [square]: [] };
+    let move = square + direction.S;
+    if (is_empty(pieces[move])) {
+        moves[square].push(move);
+        move += direction.S;
+
+        if (is_empty(pieces[move]) && is_rank(square, 7)) {
+            moves[square].push(move);
+        }
+    }
+
+    return moves;
+}
+
+// TODO: Add documentation
 function is_valid_square(square) {
     return true;
 }
@@ -265,4 +302,12 @@ function extend_object(obj1, obj2) {
     }
 
     return obj1;
+}
+
+function is_empty(square) {
+    return square === '';
+}
+
+function is_rank(square, rank) {
+    return Math.floor((square - 10) / 10) === rank;
 }
