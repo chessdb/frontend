@@ -59,7 +59,8 @@ export function gen_legal_moves(fen_str) {
     const pieces = fen.parse(fen_str).reverse();
     const pieces_with_padding = add_padding(pieces);
     const turn = get_turn(fen_str)
-    const pseudo_legal_moves = gen_pseudo_legal_moves(pieces_with_padding, turn);
+    const en_passant_square = get_en_passant_square(fen_str);
+    const pseudo_legal_moves = gen_pseudo_legal_moves(pieces_with_padding, turn, en_passant_square);
     console.log(pseudo_legal_moves);
     return remove_illegal_moves(pseudo_legal_moves);
 }
@@ -88,7 +89,7 @@ function add_padding(pieces) {
 }
 
 // TODO: Add documentation
-function gen_pseudo_legal_moves(pieces, turn) {
+function gen_pseudo_legal_moves(pieces, turn, en_passant_square) {
     let pseudo_legal_moves = { };
     for (let i = 0; i < pieces.length; i++) {
         if (!is_piece_color(pieces[i], turn)) {
@@ -98,7 +99,7 @@ function gen_pseudo_legal_moves(pieces, turn) {
         let new_moves = { };
         switch (pieces[i]) {
             case 'P':
-                new_moves = gen_white_pawn_moves(pieces, i);
+                new_moves = gen_white_pawn_moves(pieces, i, en_passant_square);
                 break;
             case 'R':
                 new_moves = gen_slider_moves(pieces, turn, i, rook_dir);
@@ -117,7 +118,7 @@ function gen_pseudo_legal_moves(pieces, turn) {
                 break;
 
             case 'p':
-                new_moves = gen_black_pawn_moves(pieces, i);
+                new_moves = gen_black_pawn_moves(pieces, i, en_passant_square);
                 break;
             case 'r':
                 new_moves = gen_slider_moves(pieces, turn, i, rook_dir);
@@ -152,7 +153,6 @@ function remove_illegal_moves(moves) {
 
 // TODO: Add documentation
 function gen_non_slider_moves(pieces, turn, square, directions) {
-    // TODO: "square" but either "0" or "a1"
     let moves = { [square]: [] };
     for (let i = 0; i < directions.length; i++) {
         const new_square = square + directions[i];
@@ -176,7 +176,6 @@ function gen_non_slider_moves(pieces, turn, square, directions) {
 
 // TODO: Add documentation
 function gen_slider_moves(pieces, turn, square, directions) {
-    // TODO: "square" but either "0" or "a1"
     let moves = { [square]: [] };
     const opponent_color = get_opponent_color(turn);
     for (let i = 0; i < directions.length; i++) {
@@ -207,7 +206,7 @@ function gen_slider_moves(pieces, turn, square, directions) {
 }
 
 // TODO: Add documentation
-function gen_white_pawn_moves(pieces, square) {
+function gen_white_pawn_moves(pieces, square, en_passant_square) {
     let moves = { [square]: [] };
     let move = square + direction.N;
     if (is_empty(pieces[move])) {
@@ -219,11 +218,19 @@ function gen_white_pawn_moves(pieces, square) {
         }
     }
 
+    if (is_piece_color(pieces[move + direction.NE]), sides.black) {
+        moves[square].push(move + direction.NE);
+    }
+
+    if (is_piece_color(pieces[move + direction.NW]), sides.black) {
+        moves[square].push(move + direction.NW);
+    }
+
     return moves;
 }
 
 // TODO: Add documentation
-function gen_black_pawn_moves(pieces, square) {
+function gen_black_pawn_moves(pieces, square, en_passant_square) {
     let moves = { [square]: [] };
     let move = square + direction.S;
     if (is_empty(pieces[move])) {
@@ -233,6 +240,14 @@ function gen_black_pawn_moves(pieces, square) {
         if (is_empty(pieces[move]) && is_rank(square, 7)) {
             moves[square].push(move);
         }
+    }
+
+    if (is_piece_color(pieces[move + direction.SE]), sides.white) {
+        moves[square].push(move + direction.SE);
+    }
+
+    if (is_piece_color(pieces[move + direction.SW]), sides.white) {
+        moves[square].push(move + direction.SW);
     }
 
     return moves;
